@@ -109,43 +109,29 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    # def bfs(parentList, goal, current):
-    #     child = goal
-    #     parent = current
-    #     while(parent != problem.getStartState()):
-    #         for p, c in parentList:
-    #             if c == child:
-    #                 parent = p
-    #                 for successor, action, stepCost in problem.getSuccessors(parent):
-    #                     if successor == child:
-    #                         path.insert(0, action)
-    #             child = parent    
-    #     return path
-
     q = util.Queue()
+    currentPath = util.Queue()
     current = problem.getStartState()
     path = []
     isVisited = []
     isVisited.append(problem.getStartState())
-    parentList = []  #containes a tuple with the parent coordinates and one with the child's ones
+
     while not problem.isGoalState(current):
         for successor, action, stepCost in problem.getSuccessors(current):
-            if problem.isGoalState(successor):
-                # parentList.insert(0, (current, successor))
-                # return bfs(parentList, successor, current)
-
             if successor not in isVisited:
-                # parentList.insert(0, (current, successor))
-                
+                temporaryPath = path + [action]
+                currentPath.push(temporaryPath)
                 isVisited.append(successor)
                 q.push(successor)
         current = q.pop()
-    # return path
+        path = currentPath.pop()
+    return path
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
