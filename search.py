@@ -164,7 +164,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             isVisited.append(current)
             for successor, action, stepCost in problem.getSuccessors(current):
                 if successor not in isVisited:
-                    currentPath.push((successor, path + [action]), problem.getCostOfActions(path)+stepCost+nullHeuristic(current, problem))
+                    currentPath.push((successor, path + [action]), problem.getCostOfActions(path)+stepCost+heuristic(successor,problem))
         current, path = currentPath.pop()
     return path
     util.raiseNotDefined()
