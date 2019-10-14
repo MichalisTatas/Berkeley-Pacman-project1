@@ -289,8 +289,6 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         self.startingGameState = startingGameState
-        self.cornersLeftToVisit = [self.corners[0], self.corners[1], self.corners[2], self.corners[3]]
-
 
     def getStartState(self):
         """
@@ -298,7 +296,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return ((self.startingPosition, []))
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -311,7 +309,12 @@ class CornersProblem(search.SearchProblem):
         #         self.alreadyVisitedCorners.append(state)
         #     return len(self.alreadyVisitedCorners) == 4
         # return False
-        return len(self.cornersLeftToVisit) == 0
+        coordinates, llist = state
+        if coordinates in self.corners:
+            if coordinates not in llist:
+                llist.append(coordinates)
+            return len(llist) == 4
+        return False
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -326,6 +329,9 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        coordinates , llist = state
+
+        x, y = coordinates
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -336,15 +342,17 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
 
-            x, y = state
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
-            hitsWall = self.walls[nextx][nexty]
+            hitsWall = self.walls[nextx][nexty]  
             if not hitsWall:
-                successor = ((nextx,nexty),action, 1)
+                nextnode = (nextx, nexty)
+                mylist = llist
+                if nextnode  in self.corners:
+                    if nextnode not in mylist:
+                        mylist.append(nextnode)
+                successor = (((nextnode, mylist), action, 1))
                 successors.append(successor)
-                if (nextx,nexty) in self.cornersLeftToVisit:
-                    self.cornersLeftToVisit.remove((nextx,nexty))
         self._expanded += 1 # DO NOT CHANGE
         return successors
 

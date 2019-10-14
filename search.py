@@ -110,21 +110,17 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     q = util.Queue()
-    currentPath = util.Queue()
     current = problem.getStartState()
     path = []
     isVisited = []
     isVisited.append(problem.getStartState())
 
     while not problem.isGoalState(current):
-        for successor, action, stepCost in problem.getSuccessors(current):
-            if successor not in isVisited:
-                temporaryPath = path + [action]
-                currentPath.push(temporaryPath)
-                isVisited.append(successor)
-                q.push(successor)
-        current = q.pop()
-        path = currentPath.pop()
+            for successor, action, stepCost in problem.getSuccessors(current):
+                if successor not in isVisited:
+                    isVisited.append(successor)
+                    q.push((successor, path+[action]))
+            current, path = q.pop()
     return path
     util.raiseNotDefined()
 
