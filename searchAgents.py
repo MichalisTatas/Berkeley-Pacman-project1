@@ -296,7 +296,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return ((self.startingPosition, []))
+        return ((self.startingPosition, [self.corners[0], self.corners[1], self.corners[2], self.corners[3]]))
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -311,7 +311,7 @@ class CornersProblem(search.SearchProblem):
         # return False
         coordinates, llist = state
         if coordinates in self.corners:
-            return len(llist) == 4
+            return len(llist) == 0
         return False
         util.raiseNotDefined()
 
@@ -345,9 +345,9 @@ class CornersProblem(search.SearchProblem):
             hitsWall = self.walls[nextx][nexty]  
             if not hitsWall:
                 mylist = list(llist)
-                if (nextx, nexty)  in self.corners:
-                    if (nextx, nexty) not in mylist:
-                        mylist.append(((nextx, nexty)))
+                if (nextx, nexty) in self.corners:
+                    if (nextx, nexty) in mylist:
+                        mylist.remove(((nextx, nexty)))
                 successor = ((((nextx, nexty), mylist), action, 1))
                 successors.append(successor)
         self._expanded += 1 # DO NOT CHANGE
@@ -367,6 +367,9 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+def myheuristic(position, goal):
+    return abs(position[0] - goal[0]) + abs(position[1] - goal[1])
+
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -384,6 +387,11 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+
+    unvisited = [0]
+    for corner in state[1]:
+        unvisited.append(myheuristic(state[0], corner))
+    return max(unvisited)
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
@@ -478,6 +486,12 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    foodposition = foodGrid.asList()
+
+    heuristic = [0]
+    for pos in foodposition:
+        heuristic.append(mazeDistance(position,pos,problem.startingGameState))
+    return max(heuristic)
     return 0
 
 class ClosestDotSearchAgent(SearchAgent):
