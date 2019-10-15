@@ -311,8 +311,6 @@ class CornersProblem(search.SearchProblem):
         # return False
         coordinates, llist = state
         if coordinates in self.corners:
-            if coordinates not in llist:
-                llist.append(coordinates)
             return len(llist) == 4
         return False
         util.raiseNotDefined()
@@ -346,12 +344,11 @@ class CornersProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]  
             if not hitsWall:
-                nextnode = (nextx, nexty)
-                mylist = llist
-                if nextnode  in self.corners:
-                    if nextnode not in mylist:
-                        mylist.append(nextnode)
-                successor = (((nextnode, mylist), action, 1))
+                mylist = list(llist)
+                if (nextx, nexty)  in self.corners:
+                    if (nextx, nexty) not in mylist:
+                        mylist.append(((nextx, nexty)))
+                successor = ((((nextx, nexty), mylist), action, 1))
                 successors.append(successor)
         self._expanded += 1 # DO NOT CHANGE
         return successors
